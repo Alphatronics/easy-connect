@@ -178,7 +178,7 @@ void print_MAC(NetworkInterface* network_interface, bool log_messages) {
  *
  * IN: bool  log_messages  print out diagnostics or not.
  */
-NetworkInterface* easy_connect(bool log_messages) {
+NetworkInterface* easy_connect(const char * apn, bool log_messages) {
     NetworkInterface* network_interface = NULL;
     int connect_success = -1;
 
@@ -228,10 +228,14 @@ NetworkInterface* easy_connect(bool log_messages) {
     else {
         connect_success = wifi.connect(_ssid, _password, (strlen(_password) > 1) ? NSAPI_SECURITY_WPA_WPA2 : NSAPI_SECURITY_NONE);
     }
+
+//////////////// ADJUSTED
+
 #elif MBED_CONF_APP_NETWORK_INTERFACE == CELLULAR_ONBOARD || MBED_CONF_APP_NETWORK_INTERFACE == CELLULAR
 #  ifdef MBED_CONF_APP_CELLULAR_SIM_PIN
     cellular.set_sim_pin(MBED_CONF_APP_CELLULAR_SIM_PIN);
 #  endif
+/*
 #  ifdef MBED_CONF_APP_CELLULAR_APN
 #    ifndef MBED_CONF_APP_CELLULAR_USERNAME
 #      define MBED_CONF_APP_CELLULAR_USERNAME 0
@@ -248,6 +252,21 @@ NetworkInterface* easy_connect(bool log_messages) {
         printf("[EasyConnect] Connecting using Cellular interface and default APN\n");
     }
 #  endif
+*/
+
+#    ifndef MBED_CONF_APP_CELLULAR_USERNAME
+#      define MBED_CONF_APP_CELLULAR_USERNAME 0
+#    endif
+#    ifndef MBED_CONF_APP_CELLULAR_PASSWORD
+#      define MBED_CONF_APP_CELLULAR_PASSWORD 0
+#    endif
+    cellular.modem_debug_on(log_messages);
+    cellular.set_credentials(apn, MBED_CONF_APP_CELLULAR_USERNAME, MBED_CONF_APP_CELLULAR_PASSWORD);
+    if (log_messages) {
+        printf("[EasyConnect] Connecting using Cellular interface and APN %s\n", apn);
+    }
+//////////////// END-ADJUSTED
+
     connect_success = cellular.connect();
     network_interface = &cellular;
 
@@ -316,7 +335,7 @@ NetworkInterface* easy_connect(bool log_messages) {
  *                         then MBED_CONF_APP_WIFI_PASSWORD will be used
  */
 
-NetworkInterface* easy_connect(bool log_messages,
+/*NetworkInterface* easy_connect(bool log_messages,
                                char* WiFiSSID,
                                char* WiFiPassword ) {
 
@@ -340,7 +359,7 @@ NetworkInterface* easy_connect(bool log_messages,
     }
 #endif // EASY_CONNECT_WIFI
     return easy_connect(log_messages);
-}
+}*/
 
 /* \brief easy_get_netif - easy_connect function to get pointer to network interface
  *                        without connecting to it.

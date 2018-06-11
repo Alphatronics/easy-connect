@@ -90,7 +90,7 @@ void print_MAC(NetworkInterface* network_interface, bool log_messages);
  *                       config done via mbed_app.json (see README.md for details).
  * IN: bool  log_messages  print out diagnostics or not.
  */
-NetworkInterface* easy_connect(bool log_messages = false);
+NetworkInterface* easy_connect(const char * apn, bool log_messages = false);
 
 /* \brief easy_connect - easy_connect function to connect the pre-defined network bearer,
  *                       config done via mbed_app.json (see README.md for details).
@@ -100,10 +100,10 @@ NetworkInterface* easy_connect(bool log_messages = false);
  *     char* WiFiPassword  WiFi Password - by default NULL, but if it's NULL
  *                         then MBED_CONF_APP_WIFI_PASSWORD will be used
  */
-NetworkInterface* easy_connect(bool log_messages,
+/*NetworkInterface* easy_connect(bool log_messages,
                                char* WiFiSSID,
                                char* WiFiPassword);
-
+*/
 /* \brief easy_get_netif - easy_connect function to get pointer to network interface w/o connect it.
                            You might need this for example getting the WiFi interface, then doing a scan
                            and then connecting to one of the SSIDs found with a password end user supplies.
