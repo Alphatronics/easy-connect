@@ -33,49 +33,10 @@
 #define CELLULAR          202
 #define CELLULAR_WNC14A2A 203
 
-/* Define supersets for WiFi and Mesh */
 
-#if MBED_CONF_APP_NETWORK_INTERFACE == WIFI_ESP8266
-#define EASY_CONNECT_WIFI
-
-#elif MBED_CONF_APP_NETWORK_INTERFACE == WIFI_ODIN
-#define EASY_CONNECT_WIFI
-
-#elif MBED_CONF_APP_NETWORK_INTERFACE == WIFI_RTW
-#define EASY_CONNECT_WIFI
-
-#elif MBED_CONF_APP_NETWORK_INTERFACE == WIFI_IDW0XX1
-#define EASY_CONNECT_WIFI
-
-#elif MBED_CONF_APP_NETWORK_INTERFACE == WIFI_WIZFI310
-#define EASY_CONNECT_WIFI
-
-#elif MBED_CONF_APP_NETWORK_INTERFACE == WIFI_ISM43362
-#define EASY_CONNECT_WIFI
-
-#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
-#define EASY_CONNECT_MESH
-
-#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
-#define EASY_CONNECT_MESH
-#endif // MBED_CONF_APP_NETWORK_INTERFACE
-
-#if defined(EASY_CONNECT_MESH)
-
-// Define macros for radio type
-#define ATMEL   1
-#define MCR20   2
-#define SPIRIT1 3
-#define EFR32   4
-
-// This is address to mbed Device Connector (hard-coded IP due to DNS might not be there)
-#define MBED_SERVER_ADDRESS "coaps://[2607:f0d0:2601:52::20]:5684"
-
-#else
 // This is address to mbed Device Connector
 #define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
 
-#endif // (EASY_CONNECT_MESH)
 
 /* \brief print_MAC - print_MAC  - helper function to print out MAC address
  * in: network_interface - pointer to network i/f
@@ -92,18 +53,7 @@ void print_MAC(NetworkInterface* network_interface, bool log_messages);
  */
 NetworkInterface* easy_connect(const char * apn, bool log_messages = false);
 
-/* \brief easy_connect - easy_connect function to connect the pre-defined network bearer,
- *                       config done via mbed_app.json (see README.md for details).
- * IN: bool  log_messages  print out diagnostics or not.
- *     char* WiFiSSID      WiFi SSID - by default NULL, but if it's NULL
- *                         then MBED_CONF_APP_WIFI_SSID will be used
- *     char* WiFiPassword  WiFi Password - by default NULL, but if it's NULL
- *                         then MBED_CONF_APP_WIFI_PASSWORD will be used
- */
-/*NetworkInterface* easy_connect(bool log_messages,
-                               char* WiFiSSID,
-                               char* WiFiPassword);
-*/
+
 /* \brief easy_get_netif - easy_connect function to get pointer to network interface w/o connect it.
                            You might need this for example getting the WiFi interface, then doing a scan
                            and then connecting to one of the SSIDs found with a password end user supplies.
@@ -111,12 +61,6 @@ NetworkInterface* easy_connect(const char * apn, bool log_messages = false);
  */
 
 NetworkInterface* easy_get_netif(bool log_messages);
-/* \brief easy_get_wifi - easy_connect function to get pointer to Wifi interface 
- *                        without connecting to it. You would want this 1st so that
- *                        you can scan the APNs, choose the right one and then connect.
- *
- * IN: bool  log_messages  print out diagnostics or not.
- */
-WiFiInterface* easy_get_wifi(bool log_messages);
+
 
 #endif // __EASY_CONNECT_H__
