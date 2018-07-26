@@ -51,7 +51,7 @@ void print_MAC(NetworkInterface* network_interface, bool log_messages);
  *                       config done via mbed_app.json (see README.md for details).
  * IN: bool  log_messages  print out diagnostics or not.
  */
-NetworkInterface* easy_connect(const char * apn, bool log_messages = false);
+NetworkInterface* easy_connect(const char * apn, int& retCode, bool log_messages = false);
 
 
 /* \brief easy_get_netif - easy_connect function to get pointer to network interface w/o connect it.

@@ -72,9 +72,9 @@ void print_MAC(NetworkInterface* network_interface, bool log_messages) {
  *
  * IN: bool  log_messages  print out diagnostics or not.
  */
-NetworkInterface* easy_connect(const char * apn, bool log_messages) {
+NetworkInterface* easy_connect(const char * apn,  int& retCode, bool log_messages) {
     NetworkInterface* network_interface = NULL;
-    int connect_success = -1;
+    retCode = -1;
 
     /// This should be removed once mbedOS supports proper dual-stack
     if (log_messages) {
@@ -98,23 +98,24 @@ NetworkInterface* easy_connect(const char * apn, bool log_messages) {
 #    endif
     cellular.modem_debug_on(log_messages);
     cellular.set_credentials(apn, MBED_CONF_APP_CELLULAR_USERNAME, MBED_CONF_APP_CELLULAR_PASSWORD);
+
     if (log_messages) {
         printf("[EasyConnect] Connecting using Cellular interface and APN %s\n", apn);
     }
 
-    connect_success = cellular.connect();
+    retCode = cellular.connect();
     network_interface = &cellular;
 
 #elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
     if (log_messages) {
-        printf("[EasyConnect] Using Ethernet\n");
+        printf("[EasyConnect] Connecting using Ethernet\n");
     }
     network_interface = &eth;
-    connect_success = eth.connect();
+    retCode = eth.connect();
 #endif
 
 
-    if(connect_success == 0) {
+    if(retCode == 0) {
         if (log_messages) {
             printf("[EasyConnect] Connected to Network successfully\n");
             print_MAC(network_interface, log_messages);
@@ -122,7 +123,7 @@ NetworkInterface* easy_connect(const char * apn, bool log_messages) {
     } else {
         if (log_messages) {
             print_MAC(network_interface, log_messages);
-            printf("[EasyConnect] Connection to Network Failed %d!\n", connect_success);
+            printf("[EasyConnect] Connection to Network Failed %d!\n", retCode);
         }
         return NULL;
     }
@@ -162,4 +163,3 @@ NetworkInterface* easy_get_netif(bool log_messages) {
     return  &cellular;
 #endif
 }
-
