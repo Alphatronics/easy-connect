@@ -32,8 +32,8 @@ EthernetInterface eth;
 OnboardCellularInterface cellular;
 
 #elif MBED_CONF_APP_NETWORK_INTERFACE == CELLULAR
-#include "EasyCellularConnection.h"
-EasyCellularConnection cellular;
+#include "BinbeatCellularConnection.h"
+BinbeatCellularConnection cellular;
 
 
 #else
@@ -96,8 +96,8 @@ NetworkInterface* easy_connect(const char * apn,  int& retCode, bool log_message
 #    ifndef MBED_CONF_APP_CELLULAR_PASSWORD
 #      define MBED_CONF_APP_CELLULAR_PASSWORD 0
 #    endif
-    cellular.modem_debug_on(log_messages);
     cellular.set_credentials(apn, MBED_CONF_APP_CELLULAR_USERNAME, MBED_CONF_APP_CELLULAR_PASSWORD);
+    cellular.modem_debug_on(log_messages); // do this AFTER set_credentials() because _cellularConnectionFSM is still NULL otherwise
 
     if (log_messages) {
         printf("[EasyConnect] Connecting using Cellular interface and APN %s\n", apn);
